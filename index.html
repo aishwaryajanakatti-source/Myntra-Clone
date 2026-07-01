@@ -1,45 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Myntra Navbar Clone</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" type="image/x-icon" href="https://static.vecteezy.com/system/resources/previews/050/816/835/non_2x/myntra-transparent-icon-free-png.png" height="32" width="32">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-    <header>
-        <nav>
-            <div id="logo-container">
-                <h3>Santro</h3>
-            </div>
-            <div id="search-container">
-                <input type="text" placeholder="search....">
-                <span>
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-            </div>
-            <div id="menu-container">
-                <a href="##">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Home</span>
-                </a>
-                <a href="##">
-                    <i class="fa-solid fa-circle-user"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="##">
-                    <i class="fa-solid fa-heart-circle-check"></i>
-                    <span>Wishlist</span>
-                </a>
-                <a href="##">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <span>Cart</span>
-                </a>
-            </div>
-        </nav>
-    </header>
-</body>
+<div class="toast" id="toast"></div>
 
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h3>My Bag 🛍️</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter"></div>
+</div>
+
+<!-- SEARCH MODAL -->
+<div class="search-modal" id="searchModal" onclick="closeSearch(event)">
+  <div class="search-box" onclick="event.stopPropagation()">
+    <div class="search-input-wrap">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search for brands, products..." oninput="handleSearch(this.value)">
+      <button onclick="closeSearchModal()" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;">✕</button>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <!-- <div class="top-bar">🎉 Grand Summer Sale is LIVE! <span>Flat ₹300 OFF</span> on first app purchase · Free delivery on orders above ₹499</div> -->
+  <nav class="navbar">
+    <a href="#" class="logo">
+      <img src="https://static.vecteezy.com/system/resources/previews/050/816/835/non_2x/myntra-transparent-icon-free-png.png" alt="" class="logo-img" />
+      
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="filterByCategory('mens-shirts','MEN')">MEN</a></li>
+      <li><a href="#" onclick="filterByCategory('womens-dresses','WOMEN')">WOMEN</a></li>
+      <li><a href="#" onclick="filterByCategory('tops','KIDS')">KIDS</a></li>
+      <li><a href="#" onclick="filterByCategory('furniture','HOME')">HOME</a></li>
+      <li><a href="#" onclick="filterByCategory('beauty','BEAUTY')">BEAUTY</a></li>
+      <li><a href="#" class="active" onclick="loadAllProducts()">ALL</a></li>
+    </ul>
+    <div class="search-bar" onclick="openSearchModal()">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search for products, brands and more" readonly>
+    </div>
+    <div class="nav-actions">
+      <a href="#" class="nav-action">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+      </a>
+      <a href="#" class="nav-action">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Wishlist</span>
+      </a>
+      <a href="#" class="nav-action cart-badge" onclick="openCart(); return false;">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span>Bag</span>
+        <div class="badge" id="cartCount">0</div>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔥 Grand Summer Sale 2026</div>
+    <h1>Style That <em>Speaks</em> For You</h1>
+    <p>Discover 5,00,000+ styles from 6,000+ brands. Prices crashing on top brands — up to 80% off.</p>
+    <div class="banner">
+      <img src="./image.png" alt="">
+    </div>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="scrollToProducts()">Shop Now →</button>
+      <a href="#categoriesSection"><button class="btn-outline" onclick="loadAllProducts()">View All</button></a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">6K+</div><div class="stat-label">Brands</div></div>
+      <div class="stat"><div class="stat-num">5L+</div><div class="stat-label">Styles</div></div>
+      <div class="stat"><div class="stat-num">30M+</div><div class="stat-label">Customers</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="sale-card">
+      <div class="pct">80</div>
+      <div class="off">% OFF</div>
+      <div class="sub">On Top Brands · Ends In</div>
+      <div class="timer">
+        <div class="timer-box"><div class="t" id="th">00</div><div class="tl">hrs</div></div>
+        <div class="timer-box"><div class="t" id="tm">00</div><div class="tl">min</div></div>
+        <div class="timer-box"><div class="t" id="ts">00</div><div class="tl">sec</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BANNERS -->
+<div class="banner-row">
+  <div class="banner-card pink" onclick="filterByCategory('mens-shirts','MEN')">
+    <div class="banner-icon">👔</div>
+    <div class="banner-info">
+      <h3>Men's Fashion</h3>
+      <p>Shirts, Trousers & More</p>
+      <div class="disc">Up to 70% OFF</div>
+    </div>
+  </div>
+  <div class="banner-card orange" onclick="filterByCategory('womens-dresses','WOMEN')">
+    <div class="banner-icon">👗</div>
+    <div class="banner-info">
+      <h3>Women's Fashion</h3>
+      <p>Dresses, Tops & Accessories</p>
+      <div class="disc">Up to 80% OFF</div>
+    </div>
+  </div>
+  <div class="banner-card blue" onclick="filterByCategory('beauty','BEAUTY')">
+    <div class="banner-icon">💄</div>
+    <div class="banner-info">
+      <h3>Beauty & Skin</h3>
+      <p>Top Skincare & Cosmetics</p>
+      <div class="disc">Up to 60% OFF</div>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="categories" id="categoriesSection">
+  <h2>Shop By Category</h2>
+  <div class="cat-list" id="catList"></div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section" id="productsSection">
+  <div class="section-header">
+    <h2 id="sectionTitle">All Products</h2>
+    <a href="#" onclick="loadAllProducts(); return false;">View All</a>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="setDiscount('all', this)">All</button>
+    <button class="filter-btn" onclick="setDiscount('10', this)">10%+ Off</button>
+    <button class="filter-btn" onclick="setDiscount('20', this)">20%+ Off</button>
+    <button class="filter-btn" onclick="setDiscount('30', this)">30%+ Off</button>
+    <button class="filter-btn" onclick="setDiscount('40', this)">40%+ Off</button>
+    <select class="sort-select" onchange="sortProducts(this.value)">
+      <option value="default">Sort: Relevance</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="rating">Best Rating</option>
+      <option value="discount">Highest Discount</option>
+    </select>
+  </div>
+  <div class="product-grid" id="productGrid"></div>
+  <div style="text-align:center; margin-top:32px;" id="loadMoreWrap">
+    <button class="btn-outline" id="loadMoreBtn" onclick="loadMore()" style="display:none;">Load More Products</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">myntra</div>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <h4>Online Shopping</h4>
+      <a href="#">Men</a><a href="#">Women</a><a href="#">Kids</a>
+      <a href="#">Home & Living</a><a href="#">Beauty</a><a href="#">Gift Cards</a>
+    </div>
+    <div class="footer-col">
+      <h4>Customer Policies</h4>
+      <a href="#">Contact Us</a><a href="#">FAQ</a>
+      <a href="#">T&C</a><a href="#">Terms of Use</a>
+      <a href="#">Track Orders</a><a href="#">Cancellation</a>
+    </div>
+    <div class="footer-col">
+      <h4>Useful Links</h4>
+      <a href="#">Blog</a><a href="#">Careers</a>
+      <a href="#">Corporate Info</a><a href="#">Myntra Insider</a>
+      <a href="#">Whitehat</a>
+    </div>
+    <div class="footer-col">
+      <h4>About Myntra</h4>
+      <p>India's #1 Fashion Destination. Shop from 6000+ brands and 5 lakh+ styles. 100% original products guaranteed.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    © 2025 www.myntra.com · All rights reserved · A Flipkart Company
+  </div>
+</footer>
+<script src="./script.js"></script>
+  
+
+</body>
 </html>
